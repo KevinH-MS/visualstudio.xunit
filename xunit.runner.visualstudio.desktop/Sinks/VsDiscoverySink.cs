@@ -92,8 +92,11 @@ namespace Xunit.Runner.VisualStudio.TestAdapter
                     }
                 }
 
-                result.CodeFilePath = xunitTestCase.SourceInformation.FileName;
-                result.LineNumber = xunitTestCase.SourceInformation.LineNumber.GetValueOrDefault();
+                if (xunitTestCase.SourceInformation != null)
+                {
+                    result.CodeFilePath = xunitTestCase.SourceInformation.FileName;
+                    result.LineNumber = xunitTestCase.SourceInformation.LineNumber.GetValueOrDefault();
+                }
 
                 return result;
             }

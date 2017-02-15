@@ -416,16 +416,16 @@ namespace Xunit.Runner.VisualStudio.TestAdapter
 #endif
 
                 var diagnosticSink = new DiagnosticMessageSink(logger, assemblyDisplayName, runInfo.Configuration.DiagnosticMessagesOrDefault);
-                using (var controller = new XunitFrontController(appDomain, assemblyFileName: assemblyFileName, configFileName: null, shadowCopy: shadowCopy, diagnosticMessageSink: MessageSinkAdapter.Wrap(diagnosticSink)))
+                var includeSourceInformation = runInfo.TestCases != null;
+                using (var controller = new XunitFrontController(appDomain, assemblyFileName: assemblyFileName, configFileName: null, shadowCopy: shadowCopy, diagnosticMessageSink: MessageSinkAdapter.Wrap(diagnosticSink), sourceInformationProvider: !includeSourceInformation ? new NullSourceInformationProvider() : null))
                 {
                     Dictionary<ITestCase, TestCase> xunitTestCases;
-                    if (runInfo.TestCases == null)
+                    if (!includeSourceInformation)
                     {
                         using (var discoverySink = new TestDiscoverySink(() => cancelled))
                         {
                             var discoveryOptions = TestFrameworkOptions.ForDiscovery(assembly.Configuration);
-
-                            controller.Find(includeSourceInformation: true, messageSink: discoverySink, discoveryOptions: discoveryOptions);
+                            controller.Find(includeSourceInformation: false, messageSink: discoverySink, discoveryOptions: discoveryOptions);
                             discoverySink.Finished.WaitOne();
 
                             // Apply any filtering
