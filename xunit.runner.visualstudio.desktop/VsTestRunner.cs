@@ -596,6 +596,7 @@ namespace Xunit.Runner.VisualStudio.TestAdapter
         {
             var result = new List<IRunnerReporter>();
             var runnerPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetLocalCodeBase());
+            var runnerReporterInterfaceAssemblyName = typeof(IRunnerReporter).Assembly.GetName();
 
             foreach (var dllFile in Directory.GetFiles(runnerPath, "*.dll").Select(f => Path.Combine(runnerPath, f)))
             {
@@ -604,6 +605,13 @@ namespace Xunit.Runner.VisualStudio.TestAdapter
                 try
                 {
                     var assembly = Assembly.LoadFile(dllFile);
+
+                    // Calling Assembly.GetTypes can be very expensive, while Assembly.GetReferencedAssemblies
+                    // is relatively cheap.  We can avoid loading types for assemblies that couldn't possibly
+                    // reference IRunnerReporter.
+                    if (!assembly.GetReferencedAssemblies().Where(name => name == runnerReporterInterfaceAssemblyName).Any())
+                        continue;
+
                     types = assembly.GetTypes();
                 }
                 catch (ReflectionTypeLoadException ex)
