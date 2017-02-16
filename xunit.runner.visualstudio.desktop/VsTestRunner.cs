@@ -38,7 +38,7 @@ namespace Xunit.Runner.VisualStudio.TestAdapter
 #if PLATFORM_DOTNET || NETCOREAPP1_0
         static readonly AppDomainSupport AppDomainDefaultBehavior = AppDomainSupport.Denied;
 #else
-        static readonly AppDomainSupport AppDomainDefaultBehavior = AppDomainSupport.Required;
+        static readonly AppDomainSupport AppDomainDefaultBehavior = AppDomainSupport.Denied;
 #endif
 
         static readonly HashSet<string> platformAssemblies = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
