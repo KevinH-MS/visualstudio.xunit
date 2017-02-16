@@ -429,7 +429,7 @@ namespace Xunit.Runner.VisualStudio.TestAdapter
                             discoverySink.Finished.WaitOne();
 
                             // Apply any filtering
-                            var discoveredTestCases = discoverySink.TestCases.Select(tc => new DiscoveredTestCase(runInfo.AssemblyFileName, controller, tc, logger));
+                            var discoveredTestCases = discoverySink.TestCases.Select(testCase => new DiscoveredTestCase(runInfo.AssemblyFileName, discoverer: null, testCase: testCase, logger: logger));
                             var traitNames = new HashSet<string>(discoveredTestCases.SelectMany(testCase => testCase.TraitNames));
                             var filter = new TestCaseFilter(runContext, logger, runInfo.AssemblyFileName, traitNames);
                             var filteredTestCases = discoveredTestCases.Where(dtc => filter.MatchTestCase(dtc.VSTestCase)).ToList();

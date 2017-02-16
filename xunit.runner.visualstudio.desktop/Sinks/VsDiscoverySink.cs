@@ -72,10 +72,13 @@ namespace Xunit.Runner.VisualStudio.TestAdapter
         {
             try
             {
-                var serializedTestCase = discoverer.Serialize(xunitTestCase);
+                var serializedTestCase = discoverer?.Serialize(xunitTestCase);
                 var fqTestMethodName = $"{xunitTestCase.TestMethod.TestClass.Class.Name}.{xunitTestCase.TestMethod.Method.Name}";
                 var result = new TestCase(fqTestMethodName, uri, source) { DisplayName = Escape(xunitTestCase.DisplayName) };
-                result.SetPropertyValue(VsTestRunner.SerializedTestCaseProperty, serializedTestCase);
+                if (serializedTestCase != null)
+                {
+                    result.SetPropertyValue(VsTestRunner.SerializedTestCaseProperty, serializedTestCase);
+                }
                 result.Id = GuidFromString(uri + xunitTestCase.UniqueID);
 
                 if (forceUniqueName)
